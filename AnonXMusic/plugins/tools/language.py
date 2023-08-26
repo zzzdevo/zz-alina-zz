@@ -2,18 +2,15 @@ from pykeyboard import InlineKeyboard
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, Message
 
-from config import BANNED_USERS
-from strings import get_command, get_string, languages_present
 from AnonXMusic import app
 from AnonXMusic.utils.database import get_lang, set_lang
-from AnonXMusic.utils.decorators import (ActualAdminCB, language,
-                                         languageCB)
-
-# Languages Available
+from AnonXMusic.utils.decorators import ActualAdminCB, language, languageCB
+from config import BANNED_USERS
+from strings import get_string, languages_present
 
 
 def lanuages_keyboard(_):
-    keyboard = InlineKeyboard(row_width=3)
+    keyboard = InlineKeyboard(row_width=2)
     keyboard.add(
         *[
             (
@@ -30,9 +27,7 @@ def lanuages_keyboard(_):
             text=_["BACK_BUTTON"],
             callback_data=f"settingsback_helper",
         ),
-        InlineKeyboardButton(
-            text=_["CLOSE_BUTTON"], callback_data=f"close"
-        ),
+        InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data=f"close"),
     )
     return keyboard
 
@@ -47,7 +42,6 @@ async def langs_command(client, message: Message, _):
     )
 
 
-
 @app.on_callback_query(filters.regex("LG") & ~BANNED_USERS)
 @languageCB
 async def lanuagecb(client, CallbackQuery, _):
@@ -56,14 +50,10 @@ async def lanuagecb(client, CallbackQuery, _):
     except:
         pass
     keyboard = lanuages_keyboard(_)
-    return await CallbackQuery.edit_message_reply_markup(
-        reply_markup=keyboard
-    )
+    return await CallbackQuery.edit_message_reply_markup(reply_markup=keyboard)
 
 
-@app.on_callback_query(
-    filters.regex(r"languages:(.*?)") & ~BANNED_USERS
-)
+@app.on_callback_query(filters.regex(r"languages:(.*?)") & ~BANNED_USERS)
 @ActualAdminCB
 async def language_markup(client, CallbackQuery, _):
     langauge = (CallbackQuery.data).split(":")[1]
