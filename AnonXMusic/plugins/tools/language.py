@@ -69,21 +69,16 @@ async def language_markup(client, CallbackQuery, _):
     langauge = (CallbackQuery.data).split(":")[1]
     old = await get_lang(CallbackQuery.message.chat.id)
     if str(old) == str(langauge):
-        return await CallbackQuery.answer(
-            "You're already on same language", show_alert=True
-        )
+        return await CallbackQuery.answer(_["lang_4"], show_alert=True)
     try:
         _ = get_string(langauge)
-        await CallbackQuery.answer(
-            "Successfully changed your language.", show_alert=True
-        )
+        await CallbackQuery.answer(_["lang_2"], show_alert=True)
     except:
+        _ = get_string(old)
         return await CallbackQuery.answer(
-            "Failed to change language or Language under update.",
+            _["lang_3"],
             show_alert=True,
         )
     await set_lang(CallbackQuery.message.chat.id, langauge)
     keyboard = lanuages_keyboard(_)
-    return await CallbackQuery.edit_message_reply_markup(
-        reply_markup=keyboard
-    )
+    return await CallbackQuery.edit_message_reply_markup(reply_markup=keyboard)
